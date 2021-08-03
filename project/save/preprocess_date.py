@@ -10,7 +10,7 @@ data2018 = pd.read_csv('save/data/rawdata/기상청/2018_01_to_12.csv', encoding
 data2019 = pd.read_csv('save/data/rawdata/기상청/2019_01_to_12.csv', encoding='euc-kr')
 data2020 = pd.read_csv('save/data/rawdata/기상청/2020_01_to_12.csv', encoding='euc-kr')
 data2021 = pd.read_csv('save/data/rawdata/기상청/2021_01_to_07.csv', encoding='euc-kr')
-
+train = pd.read_csv('save/data/rawdata/train.csv')
 merge_df = pd.concat([data2016, data2017, data2018, data2019, data2020, data2021])
 
 # 필요 없는 컬럼 제거
@@ -48,15 +48,16 @@ merge_df_l = merge_df_l.loc[mask_l, :]
 merge_df_d = merge_df_d.loc[mask_d, :]
 
 # 요일 매핑
-merge_df_l['요일'] = merge_df_l['요일'].map({0:'월', 1:'화',2:'수',3:'목',4:'금'})
-merge_df_d['요일'] = merge_df_d['요일'].map({0:'월', 1:'화',2:'수',3:'목',4:'금'})
+# merge_df_l['요일'] = merge_df_l['요일'].map({0:'월', 1:'화',2:'수',3:'목',4:'금'})
+# merge_df_d['요일'] = merge_df_d['요일'].map({0:'월', 1:'화',2:'수',3:'목',4:'금'})
 
 # 날짜 필터링
-mask_date1 = (merge_df_l['날짜'] >= '2016-02-01')&(merge_df_l['날짜'] <= '2021-01-26')  
-mask_date2 = (merge_df_d['날짜'] >= '2016-02-01')&(merge_df_d['날짜'] <= '2021-01-26')  
+train_date = train['일자']
+merge_df_l_mask = merge_df_l['날짜'].isin(train_date)
+merge_df_l = merge_df_l.loc[merge_df_l_mask, :]
 
-merge_df_l = merge_df_l.loc[mask_date1, :]
-merge_df_d = merge_df_d.loc[mask_date2, :]
+merge_df_d_mask = merge_df_d['날짜'].isin(train_date)
+merge_df_d = merge_df_d.loc[merge_df_d_mask, :]
 
 date_train_d_mask = merge_df_d['날짜'] <= '2020-10-31'
 date_test_d_mask = merge_df_d['날짜'] > '2020-10-31'
@@ -82,3 +83,9 @@ date_train_d.to_csv('save/data/preprocess/date_train_dinner.csv', index=False)
 date_test_d.to_csv('save/data/preprocess/date_test_dinner.csv', index=False)
 date_train_l.to_csv('save/data/preprocess/date_train_lunch.csv', index=False)
 date_test_l.to_csv('save/data/preprocess/date_test_lunch.csv', index=False)
+
+# merge_df_l.reset_index(drop=False, inplace=True)
+# merge_df_d.reset_index(drop=False, inplace=True)
+
+# merge_df_l.drop('index', axis=1, inplace=True)
+# merge_df_d.drop('index', axis=1, inplace=True)
