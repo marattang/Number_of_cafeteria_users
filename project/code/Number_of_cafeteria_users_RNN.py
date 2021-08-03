@@ -40,16 +40,28 @@ dinner_train = date_train_dinner[['강수량(mm)']]
 corona_train = corona_train[['확진자수']]
 corona_test = corona_test[['확진자수']]
 
-x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
-x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+# x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
+# x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+
+# x1_train = pd.concat([x_train, lunch_train], axis=1)
+# x2_train = pd.concat([x_train, dinner_train], axis=1)
+
+x1_train = x_train
+x2_train = x_train
 
 # lunch_test = date_test_lunch[['기온(°C)','강수량(mm)','습도(%)','적설(cm)']]
 # dinner_test = date_test_dinner[['기온(°C)','강수량(mm)','습도(%)','적설(cm)']]
 lunch_test = date_test_lunch[['강수량(mm)']]
 dinner_test = date_test_dinner[['강수량(mm)']]
 
-x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
-x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+# x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
+# x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+
+# x1_test = pd.concat([x_test, lunch_test], axis=1)
+# x2_test = pd.concat([x_test, dinner_test], axis=1)
+
+x1_test = x_test
+x2_test = x_test
 
 print('x train', x1_train)
 print('x test', x1_test)
@@ -68,16 +80,17 @@ x1_test = scaler.transform(x1_test)
 x2_train = scaler.transform(x2_train)
 x2_test = scaler.transform(x2_test)
 
-x1_train = x1_train.reshape(1149, 8, 1)
-x2_train = x2_train.reshape(1149, 8, 1)
-x1_test = x1_test.reshape(56, 8, 1)
-x2_test = x2_test.reshape(56, 8, 1)
+x1_train = x1_train.reshape(1149, 6, 1)
+x2_train = x2_train.reshape(1149, 6, 1)
+x1_test = x1_test.reshape(56, 6, 1)
+x2_test = x2_test.reshape(56, 6, 1)
+
 # x1_train, y1_train,
 print('x1_train shape', x1_train.shape)
 print('y1_train shape', y1_train.shape)
 
 model1 = Sequential()
-model1.add(LSTM(units=64, activation='relu', input_shape=(8, 1)))
+model1.add(LSTM(units=64, activation='relu', input_shape=(6, 1)))
 # model1.add(Dropout(0.4))
 model1.add(Dense(64, activation='relu'))
 model1.add(Dense(32, activation='relu'))
@@ -86,7 +99,7 @@ model1.add(Dense(8, activation='relu'))
 model1.add(Dense(1))
 
 model2 = Sequential()
-model2.add(LSTM(units=64, activation='relu', input_shape=(8, 1)))
+model2.add(LSTM(units=64, activation='relu', input_shape=(6, 1)))
 # model2.add(Dropout(0.4))
 model2.add(Dense(128, activation='relu'))
 model2.add(Dense(64, activation='relu'))

@@ -40,16 +40,29 @@ dinner_train = date_train_dinner[['강수량(mm)']]
 corona_train = corona_train[['확진자수']]
 corona_test = corona_test[['확진자수']]
 
-x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
-x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+# x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
+# x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+
+x1_train = pd.concat([x_train, corona_train], axis=1)
+x2_train = pd.concat([x_train, corona_train], axis=1)
+
+# x1_train = x_train
+# x2_train = x_train
 
 # lunch_test = date_test_lunch[['기온(°C)','강수량(mm)','습도(%)','적설(cm)']]
 # dinner_test = date_test_dinner[['기온(°C)','강수량(mm)','습도(%)','적설(cm)']]
 lunch_test = date_test_lunch[['강수량(mm)']]
 dinner_test = date_test_dinner[['강수량(mm)']]
 
-x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
-x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+# x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
+# x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+
+x1_test = pd.concat([x_test, corona_test], axis=1)
+x2_test = pd.concat([x_test, corona_test], axis=1)
+
+# x1_test = x_test
+# x2_test = x_test
+
 
 print('x train', x1_train)
 print('x test', x1_test)
@@ -73,7 +86,7 @@ print('x1_train shape', x1_train.shape)
 print('y1_train shape', y1_train.shape)
 
 model1 = Sequential()
-model1.add(Dense(256, activation='relu', input_shape=(8, )))
+model1.add(Dense(256, activation='relu', input_shape=(7, )))
 # model1.add(Dropout(0.2))
 model1.add(Dense(128, activation='relu'))
 model1.add(Dense(128, activation='relu'))
@@ -84,7 +97,7 @@ model1.add(Dense(8, activation='relu'))
 model1.add(Dense(1))
 
 model2 = Sequential()
-model2.add(Dense(256, activation='relu', input_shape=(8, )))
+model2.add(Dense(256, activation='relu', input_shape=(7, )))
 # model2.add(Dropout(0.2))
 model2.add(Dense(128, activation='relu'))
 model2.add(Dense(128, activation='relu'))
@@ -137,3 +150,10 @@ print('r2 score : ', r2)
 
 # DNN
 # r2 score :  0.793169606139764
+# corona 데이터만 사용했을 때 r2 score :  0.7924977985475413
+
+# 날씨데이터만
+# r2 score :  0.7589144237784835
+
+# 원본데이터만
+# r2 score :  0.772431577579187

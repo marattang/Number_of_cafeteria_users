@@ -38,14 +38,26 @@ dinner_train = date_train_dinner[['강수량(mm)']]
 corona_train = corona_train[['확진자수']]
 corona_test = corona_test[['확진자수']]
 
-x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
-x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+# x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
+# x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+
+# x1_train = pd.concat([x_train, lunch_train], axis=1)
+# x2_train = pd.concat([x_train, dinner_train], axis=1)
+
+x1_train = x_train
+x2_train = x_train
 
 lunch_test = date_test_lunch[['강수량(mm)']]
 dinner_test = date_test_dinner[['강수량(mm)']]
 
-x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
-x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+# x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
+# x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+
+# x1_test = pd.concat([x_test, lunch_test], axis=1)
+# x2_test = pd.concat([x_test, dinner_test], axis=1)
+
+x1_test = x_test
+x2_test = x_test
 
 print('x train', x1_train)
 print('x test', x1_test)
@@ -69,16 +81,16 @@ x2_test = scaler.transform(x2_test)
 # x1_test = x1_test.reshape(56, 1, 1, 8)
 # x2_test = x2_test.reshape(56, 1, 1, 8)
 
-x1_train = x1_train.reshape(1149, 8, 1, 1)
-x2_train = x2_train.reshape(1149, 8, 1, 1)
-x1_test = x1_test.reshape(56, 8, 1, 1)
-x2_test = x2_test.reshape(56, 8, 1, 1)
+x1_train = x1_train.reshape(1149, 6, 1, 1)
+x2_train = x2_train.reshape(1149, 6, 1, 1)
+x1_test = x1_test.reshape(56, 6, 1, 1)
+x2_test = x2_test.reshape(56, 6, 1, 1)
 # x1_train, y1_train,
 print('x1_train shape', x1_train.shape)
 print('y1_train shape', y1_train.shape)
 
 model1 = Sequential()
-model1.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(8, 1, 1)))
+model1.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(6, 1, 1)))
 model1.add(Flatten())
 model1.add(Dense(128, activation='relu'))
 model1.add(Dense(64, activation='relu'))
@@ -87,7 +99,7 @@ model1.add(Dense(8, activation='relu'))
 model1.add(Dense(1))
 
 model2 = Sequential()
-model2.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(8, 1, 1)))
+model2.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(6, 1, 1)))
 model2.add(Flatten())
 model2.add(Dense(128, activation='relu'))
 model2.add(Dense(64, activation='relu'))
