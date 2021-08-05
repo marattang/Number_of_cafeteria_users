@@ -15,6 +15,7 @@ date_test_dinner = pd.read_csv('./save/data/preprocess/date_test_dinner.csv')
 corona_train = pd.read_csv('./save/data/preprocess/corona_train_2016.csv')
 corona_test = pd.read_csv('./save/data/preprocess/corona_test.csv')
 
+# 요일 매핑
 train['요일'] = train['요일'].map({'월':0, '화':1, '수':2, '목':3, '금':4})
 test['요일'] = test['요일'].map({'월':0, '화':1, '수':2, '목':3, '금':4})
 
@@ -44,8 +45,8 @@ corona_test = corona_test[['확진자수']]
 
 x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
 x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
-
-# 
+# x1_train = x_train
+# x2_train = x_train
 
 # lunch_test = date_test_lunch[['기온(°C)','강수량(mm)','습도(%)','적설(cm)']]
 # dinner_test = date_test_dinner[['기온(°C)','강수량(mm)','습도(%)','적설(cm)']]
@@ -54,6 +55,10 @@ dinner_test = date_test_dinner[['강수량(mm)']]
 
 x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
 x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+
+# x1_test = x_test
+# x2_test = x_test
+
 
 model1 = RandomForestRegressor(n_jobs=-1, random_state=5)
 model2 = RandomForestRegressor(n_jobs=-1, random_state=5)
@@ -68,6 +73,16 @@ pred2 = model2.predict(x2_test)
 
 r2 = r2_score([y1_test, y2_test],[pred1, pred2])
 print('r2 score : ', r2)
+
+pred1 = pd.Series(pred1)
+pred2 = pd.Series(pred2)
+result = pd.concat([test['일자'], pred1, pred2], axis=1)
+onebon = pd.concat([test['일자'], y1_test, y2_test], axis=1)
+print(result)
+print(onebon)
+
+result.to_csv('./save/data/preprocess/test_result_predict_RF_onebon.csv')
+# onebon.to_csv('./save/data/preprocess/test_result_original.csv')
 
 # 기온(°C)  강수량(mm)  습도(%)  적설(cm)
 # r2 score :  0.7549222139625361 -> r2 score :  0.7715592633957508

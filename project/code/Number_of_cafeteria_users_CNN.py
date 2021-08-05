@@ -38,26 +38,26 @@ dinner_train = date_train_dinner[['강수량(mm)']]
 corona_train = corona_train[['확진자수']]
 corona_test = corona_test[['확진자수']]
 
-# x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
-# x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
+x1_train = pd.concat([x_train, lunch_train, corona_train], axis=1)
+x2_train = pd.concat([x_train, dinner_train, corona_train], axis=1)
 
 # x1_train = pd.concat([x_train, lunch_train], axis=1)
 # x2_train = pd.concat([x_train, dinner_train], axis=1)
 
-x1_train = x_train
-x2_train = x_train
+# x1_train = x_train
+# x2_train = x_train
 
 lunch_test = date_test_lunch[['강수량(mm)']]
 dinner_test = date_test_dinner[['강수량(mm)']]
 
-# x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
-# x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
+x1_test = pd.concat([x_test, lunch_test, corona_test], axis=1)
+x2_test = pd.concat([x_test, dinner_test, corona_test], axis=1)
 
 # x1_test = pd.concat([x_test, lunch_test], axis=1)
 # x2_test = pd.concat([x_test, dinner_test], axis=1)
 
-x1_test = x_test
-x2_test = x_test
+# x1_test = x_test
+# x2_test = x_test
 
 print('x train', x1_train)
 print('x test', x1_test)
@@ -81,16 +81,16 @@ x2_test = scaler.transform(x2_test)
 # x1_test = x1_test.reshape(56, 1, 1, 8)
 # x2_test = x2_test.reshape(56, 1, 1, 8)
 
-x1_train = x1_train.reshape(1149, 6, 1, 1)
-x2_train = x2_train.reshape(1149, 6, 1, 1)
-x1_test = x1_test.reshape(56, 6, 1, 1)
-x2_test = x2_test.reshape(56, 6, 1, 1)
+x1_train = x1_train.reshape(1149, 8, 1, 1)
+x2_train = x2_train.reshape(1149, 8, 1, 1)
+x1_test = x1_test.reshape(56, 8, 1, 1)
+x2_test = x2_test.reshape(56, 8, 1, 1)
 # x1_train, y1_train,
 print('x1_train shape', x1_train.shape)
 print('y1_train shape', y1_train.shape)
 
 model1 = Sequential()
-model1.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(6, 1, 1)))
+model1.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(8, 1, 1)))
 model1.add(Flatten())
 model1.add(Dense(128, activation='relu'))
 model1.add(Dense(64, activation='relu'))
@@ -99,7 +99,7 @@ model1.add(Dense(8, activation='relu'))
 model1.add(Dense(1))
 
 model2 = Sequential()
-model2.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(6, 1, 1)))
+model2.add(Conv2D(filters=64, activation='relu', kernel_size=(1, 1), input_shape=(8, 1, 1)))
 model2.add(Flatten())
 model2.add(Dense(128, activation='relu'))
 model2.add(Dense(64, activation='relu'))
@@ -118,15 +118,20 @@ model2.fit(x2_train, y2_train, validation_split=0.1, batch_size=5, callbacks=[es
 pred1 = model1.predict(x1_test)
 pred2 = model2.predict(x2_test)
 
-print('pred1.shape',pred1.shape)
-print('pred2.shape',pred2.shape)
-print('y1_test.shape',y1_test.shape)
-print('y2_test.shape',y2_test.shape)
 pred1 = pred1.reshape(pred1.shape[0])
 pred2 = pred2.reshape(pred2.shape[0])
 
 r2 = r2_score([y1_test, y2_test],[pred1, pred2])
 print('r2 score : ', r2)
+
+pred1 = pd.Series(pred1)
+pred2 = pd.Series(pred2)
+result = pd.concat([test['일자'], pred1, pred2], axis=1)
+onebon = pd.concat([test['일자'], y1_test, y2_test], axis=1)
+print(result)
+print(onebon)
+
+result.to_csv('./save/data/preprocess/test_result_predict_CNN.csv')
 
 # 랜덤 포레스트
 # 기온(°C)  강수량(mm)  습도(%)  적설(cm)

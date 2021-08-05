@@ -40,17 +40,6 @@ merge_df_d['요일'] = merge_df_d['날짜'].dt.dayofweek
 merge_df_l = merge_df_l.fillna(0)
 merge_df_d = merge_df_d.fillna(0)
 
-# 평일만 필터링
-mask_l = (merge_df_l['요일'] != 5) & (merge_df_l['요일'] != 6)
-mask_d = (merge_df_d['요일'] != 5) & (merge_df_d['요일'] != 6)
-
-merge_df_l = merge_df_l.loc[mask_l, :]
-merge_df_d = merge_df_d.loc[mask_d, :]
-
-# 요일 매핑
-# merge_df_l['요일'] = merge_df_l['요일'].map({0:'월', 1:'화',2:'수',3:'목',4:'금'})
-# merge_df_d['요일'] = merge_df_d['요일'].map({0:'월', 1:'화',2:'수',3:'목',4:'금'})
-
 # 날짜 필터링
 train_date = train['일자']
 merge_df_l_mask = merge_df_l['날짜'].isin(train_date)
